@@ -2,15 +2,17 @@
 
 ELECTRUM_HOST="localhost"
 ELECTRUM_PORT="50001"
-
-# Use environment variable if available
-: "${DISCORD_WEBHOOK_URL:?}"
-
-# JSON-RPC payload with newline
 PING_PAYLOAD='{"id":0,"method":"server.ping","params":[],"jsonrpc":"2.0"}'
 
 echo "[INFO] Starting Electrum healthcheck..."
 echo "[INFO] Sending ping to $ELECTRUM_HOST:$ELECTRUM_PORT"
+
+# Show Discord alerting status
+if [[ -n "$DISCORD_WEBHOOK_URL" ]]; then
+  echo "[INFO] Discord alerting is ENABLED"
+else
+  echo "[INFO] Discord alerting is DISABLED"
+fi
 
 # First attempt
 RESPONSE=$(echo -e "$PING_PAYLOAD" | nc -w 3 "$ELECTRUM_HOST" "$ELECTRUM_PORT")
@@ -23,9 +25,7 @@ if [[ -z "$RESPONSE" ]]; then
   if [[ -z "$RESPONSE" ]]; then
     echo "[ERROR] Electrum server is unresponsive after second attempt."
 
-    if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
-      echo "[WARN] DISCORD_WEBHOOK_URL not set. Skipping Discord alert."
-    else
+    if [[ -n "$DISCORD_WEBHOOK_URL" ]]; then
       echo "[INFO] Sending alert to Discord..."
       DISCORD_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" \
          -X POST \
