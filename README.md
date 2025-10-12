@@ -1,4 +1,6 @@
 
+# DEPRECATED: use https://github.com/flokiorg/flokicoin-electrs instead
+
 # Flokicoin Electrum Server
 
 A block chain index engine written in Rust based on [romanz/electrs](https://github.com/romanz/electrs).
@@ -30,5 +32,4 @@ The database schema is described [here](doc/schema.md).
 ## Contributing
 
 All contributions to this project are welcome. Please refer to the [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
 
